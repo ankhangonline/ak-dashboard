@@ -41,7 +41,7 @@ APP Downloads ──┤
 GA4 API ────────┘
 ```
 
-GAS chạy tự động **2 lần/ngày** (9:00–10:00 và 15:00–16:00). PM không cần làm gì ngoài kiểm tra kết quả và viết nhận định cuối tháng.
+GAS chạy tự động **2 lần/ngày** (10:00–11:00 và 14:00–15:00). PM không cần làm gì ngoài kiểm tra kết quả và viết nhận định cuối tháng.
 
 ---
 
