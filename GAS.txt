@@ -1,8 +1,8 @@
 /**
- * MASTER ROBOT V18.0 - THÊM SLIDE 3 DỰ ÁN
+ * MASTER ROBOT V19.0
  * ---------------------------------------------------------------------------
  * Tác vụ : Thực đạt, Target Online, Snapshot Danh mục, Target 4 Kênh, GA4, Báo cáo.
- * Thay đổi so với V17: getReportData() thêm tab "Dự án" + hàm _aggProjects()
+ * Thay đổi so với V18: cutoffDay (so sánh cùng kỳ), fix snapshot cuối tháng
  * ---------------------------------------------------------------------------
  */
 
@@ -62,7 +62,7 @@ function run_Master_System_Ultimate() {
   // T3: Snapshot Danh mục (luôn chạy hằng ngày)
   Logger.log("--------------------------------------------------");
   try {
-    Logger.log("📊 [T3]: SNAPSHOT DOANH THU DANH MỤC");
+    Logger.log("📊 [T3]: SNAPSHOT DOANH THU DANH MỤC (tháng hiện tại + tháng trước nếu đầu tháng)");
     sync_CategorySnapshot(ssSource, ssTarget);
   } catch (e) {
     Logger.log("❌ LỖI T3: " + e.message);
@@ -247,11 +247,25 @@ function sync_CurrentOnlineTarget(ssSource, ssTarget) {
 
 // ===========================================================================
 // T3: SNAPSHOT DANH MỤC
+// Luôn chạy hằng ngày. Trong LOOKBACK_DAYS ngày đầu tháng, chạy thêm tháng
+// trước để bắt snapshot lũy kế cuối tháng (vì file hiệu suất chậm 1 ngày).
 // ===========================================================================
 
 function sync_CategorySnapshot(ssSource, ssTarget) {
-  const currentMonth = new Date().getMonth() + 1;
-  [currentMonth].forEach(m => sync_CategorySnapshot_ByMonth(ssSource, ssTarget, m));
+  const today        = new Date();
+  const currentMonth = today.getMonth() + 1;
+
+  // Luôn chạy tháng hiện tại
+  const monthsToRun = [currentMonth];
+
+  // Nếu đang trong lookback window (ngày 1 đến LOOKBACK_DAYS đầu tháng)
+  // thì chạy thêm tháng trước để bắt snapshot cuối tháng trước
+  if (today.getDate() <= CONFIG.LOOKBACK_DAYS) {
+    const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+    monthsToRun.push(prevMonth);
+  }
+
+  monthsToRun.forEach(m => sync_CategorySnapshot_ByMonth(ssSource, ssTarget, m));
 }
 
 function sync_CategorySnapshot_ByMonth(ssSource, ssTarget, month) {
