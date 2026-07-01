@@ -14,7 +14,7 @@ window._earlyCache = {};
   const API    = "https://script.google.com/macros/s/AKfycbzJaaAxK9d3rUT3RNWaoFRsWOS-KbVZM7pkSG3CJxAxIOVX-8_kYDCe55EeeifVpEqUOQ/exec";
   const MONTHS = ["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
   const now    = new Date();
-  // Tháng hiển thị = tháng hiện tại - 1 (không show tháng hiện tại)
+  // Preload tháng mới nhất + tháng liền trước để tăng tốc load
   const disp   = new Date(now.getFullYear(), now.getMonth()-1, 1);
   const pk     = disp.getFullYear()+"-"+String(disp.getMonth()+1).padStart(2,"0");
   const target = MONTHS.includes(pk) ? pk : MONTHS[MONTHS.length-1];
@@ -253,7 +253,7 @@ const cache = {}, charts = {};
 
 // ── TÍNH THÁNG HIỂN THỊ (luôn = tháng hiện tại - 1) ─────
 const _now  = new Date();
-// VISIBLE_MONTHS: chỉ show đến tháng n-1, ẩn tháng hiện tại
+// VISIBLE_MONTHS: hiện tất cả tháng trong MONTHS (bao gồm tháng hiện tại)
 const _curYYYYMM = _now.getFullYear() + "-" + String(_now.getMonth()+1).padStart(2,"0");
 const VISIBLE_MONTHS = MONTHS;
 
@@ -463,7 +463,7 @@ function buildHTML(month,d,prev){
   const cats=d.categories||[], ch=d.channels||{}, dl=d.appDownloads||{}, cum=dl.cumulative||1;
   const thuoc=cats.find(c=>c.name==="Thuốc"), top3=cats.filter(c=>c.name!=="Thuốc").slice(0,3);
   const kL=["CC","Web","Sàn","App","Affiliate"], kD=[ch.CC?.percent||0,ch.Web?.percent||0,ch.San?.percent||0,ch.App?.percent||0,ch.Affiliate?.percent||0];
-  function sp(v){if(v===null)return"";return `<span class="${v>=0?'up':'down'}">${sign(v)}${v}% so với ${pl} (cùng kỳ 1-${d.cutoffDay}/${pi>=0?pi+1:"?"}&${d.cutoffDay}/${month.split("-")[1]})</span>`;}
+  function sp(v){if(v===null)return"";return `<span class="${v>=0?'up':'down'}">${sign(v)}${v}% so với ${pl} (cùng kỳ 1–${d.cutoffDay}/${pi>=0?pi+1:"?"} vs 1–${d.cutoffDay}/${month.split("-")[1]})</span>`;}
   // Nếu không có cutoff thì sp() bình thường (so sánh full tháng)
   function spFull(v){if(v===null)return"";return `<span class="${v>=0?'up':'down'}">${sign(v)}${v}% so với ${pl}</span>`;}
   const spFn = d.cutoffDay ? sp : spFull;
@@ -568,7 +568,7 @@ ${cutoffBanner}
 <div class="slide">${slideHeaderProjects()}<div class="slide-body">
 <div class="projects-grid">
   ${projCol(`Dự án lớn ${lbl}`, `${proj.done.length} dự án`, proj.done)}
-  ${projCol(`Dự án lớn ${nextMonLbl}`, `Kế hoạch`, proj.plan)}
+  ${projCol(`Dự án lớn ${nextMonLbl}`, `${proj.plan.length} dự án`, proj.plan)}
 </div>
 <div class="nhan-dinh" id="nd_${month}_3"></div>
 </div></div>`;
