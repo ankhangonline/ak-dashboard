@@ -249,6 +249,8 @@ body { font-family: 'Helvetica Neue',HelveticaNeue,Helvetica,Arial,sans-serif; f
 const PW_HASH   = "dc8f68e1937f6da455dbf7a7fc8935a539768cea2c5ad1d7170c90c709db476b";
 const SESSION_KEY = "ak_auth";
 const API       = "https://script.google.com/macros/s/AKfycbzJaaAxK9d3rUT3RNWaoFRsWOS-KbVZM7pkSG3CJxAxIOVX-8_kYDCe55EeeifVpEqUOQ/exec";
+const _now      = new Date();
+const _curYYYYMM = _now.getFullYear() + "-" + String(_now.getMonth()+1).padStart(2,"0");
 const MONTHS = [], LBL = {};
 (function() {
   const sy = 2026, sm = 1;
@@ -270,10 +272,7 @@ const PAL_CAT   = ["#2E8B40","#61D836","#00CCA0","#1A6B2E","#00897B","#39B54A","
 const PAL_KENH  = ["#61D836","#00A1FE","#00897B","#1A6B2E","#A3D9FF"];
 const cache = {}, charts = {};
 
-// ── TÍNH THÁNG HIỂN THỊ (luôn = tháng hiện tại - 1) ─────
-const _now  = new Date();
 // VISIBLE_MONTHS: hiện tất cả tháng trong MONTHS (bao gồm tháng hiện tại)
-const _curYYYYMM = _now.getFullYear() + "-" + String(_now.getMonth()+1).padStart(2,"0");
 const VISIBLE_MONTHS = MONTHS;
 
 // Tháng default = tháng mới nhất trong VISIBLE_MONTHS
